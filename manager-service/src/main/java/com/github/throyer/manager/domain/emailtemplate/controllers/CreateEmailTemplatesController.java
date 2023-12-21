@@ -5,6 +5,7 @@ import com.github.throyer.manager.domain.emailtemplate.dtos.EmailTemplateInforma
 import com.github.throyer.manager.domain.emailtemplate.services.CreateEmailTemplateService;
 import com.github.throyer.manager.domain.emailtemplate.swagger.CreateEmailTemplateConflictResponse;
 import com.github.throyer.manager.infra.handlers.BadRequestResponse;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +40,14 @@ public class CreateEmailTemplatesController {
         description = "name unavailable",
         content = {@Content(schema = @Schema(implementation = CreateEmailTemplateConflictResponse.class))}
     )
-    @Operation(summary = "Register a new email template", description = "Creates a new email template")
+    @Operation(
+      summary = "Register a new email template",
+      description = "Creates a new email template",
+      externalDocs = @ExternalDocumentation(
+        description = "Mustache documentation",
+        url = "https://github.com/janl/mustache.js?tab=readme-ov-file#mustachejs---logic-less-mustache-templates-with-javascript"
+      )
+    )
     public ResponseEntity<EmailTemplateInformation> create(@RequestBody @Valid CreateEmailTemplateData props) {
         log.info("creating a new email template.");
         var template = service.create(props);
