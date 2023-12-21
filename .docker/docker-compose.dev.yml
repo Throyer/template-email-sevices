@@ -1,0 +1,104 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:5.0.5
+    container_name: communication_database_dev
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${DB_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MONGO_INITDB_DATABASE: "${DB_NAME}"
+    volumes:
+      - ./configurations/database/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ~/.volumes/communication/database/mongodb:/data/db
+    networks:
+      - communication-network
+    tty: true
+
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    restart: unless-stopped
+    container_name: communication_rabbitmq_dev
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_CLIENT_WEB_PORT}:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    networks:
+      - communication-network
+    tty: true
+
+  manager_service:
+    image: manager-service/development
+    build:
+      context: ../manager-service
+      dockerfile: ../.docker/configurations/manager/Dockerfile.dev
+    container_name: manager_service_dev
+    links:
+      - mongodb
+      - rabbitmq
+    ports:
+      - "${MANAGER_PORT}:${MANAGER_PORT}"
+      - "${MANAGER_DEBUG_PORT}:${MANAGER_DEBUG_PORT}"
+    env_file:
+      -   ".env"
+    volumes:
+      - ../manager-service:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    networks:
+      - communication-network
+    tty: true
+    environment: 
+      - "SERVER_PORT=${MANAGER_PORT}"
+    entrypoint: [
+      'dockerize',
+      '-wait',
+      'tcp://rabbitmq:${RABBITMQ_PORT}',
+      '-timeout',
+      '20s',
+      'mvn',
+      'spring-boot:run',
+      '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${MANAGER_DEBUG_PORT},suspend=n"'
+    ]
+
+  sender_service:
+    image: sender-service/development
+    build:
+      context: ../sender-service
+      dockerfile: ../.docker/configurations/sender/Dockerfile.dev
+    container_name: sender_service_dev
+    links:
+      - rabbitmq
+    ports:
+      - "${SENDER_PORT}:${SENDER_PORT}"
+      - "${SENDER_DEBUG_PORT}:${SENDER_DEBUG_PORT}"
+    env_file:
+      -   ".env"
+    volumes:
+      - ../sender-service:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    networks:
+      - communication-network
+    tty: true
+    environment:
+      - "SERVER_PORT=${SENDER_PORT}"
+    entrypoint: [
+      'dockerize',
+      '-wait',
+      'tcp://rabbitmq:${RABBITMQ_PORT}',
+      '-timeout',
+      '20s',
+      'mvn',
+      'spring-boot:run',
+      '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SENDER_DEBUG_PORT},suspend=n"'
+    ]
+
+networks:
+  communication-network:
+    name: email
+    driver: bridge
