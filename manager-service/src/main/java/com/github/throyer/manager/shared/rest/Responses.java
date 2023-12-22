@@ -1,21 +1,28 @@
 package com.github.throyer.manager.shared.rest;
 
-import com.github.throyer.manager.infra.errors.ApiError;
-import com.github.throyer.manager.utils.JSON;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
+import static java.lang.String.format;
+import static java.net.URI.create;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.ResponseEntity.status;
 
 import java.io.IOException;
 
-import static java.lang.String.format;
-import static java.net.URI.create;
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.ResponseEntity.status;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.github.throyer.manager.infra.errors.ApiError;
+import com.github.throyer.manager.utils.JSON;
+
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class Responses {

@@ -65,6 +65,34 @@ services:
       '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${MANAGER_DEBUG_PORT},suspend=n"'
     ]
 
+  manager_app:
+    image: throyer/manager-app-development:latest
+    build:
+      context: ../manager-app
+      dockerfile: ../.docker/configurations/app/Dockerfile.dev
+    container_name: manager_app_dev
+    links:
+      - server
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ../manager-app:/app
+    working_dir: /app
+    networks:
+      - communication-network
+    tty: true
+    env_file: ".env"
+    entrypoint: [
+      "dockerize",
+      "-wait",
+      "http://server:${SERVER_PORT}",
+      "-timeout",
+      "20s",
+      "npm",
+      "run",
+      "dev",
+    ]
+
   sender_service:
     image: sender-service/development
     build:

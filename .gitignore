@@ -1,1 +1,7 @@
 .vscode/settings.json
+.docker/.env
+.docker/.env.dev
+.docker/.env.qa
+.docker/.env.stg
+.docker/.env.stage
+.docker/.env.prod
