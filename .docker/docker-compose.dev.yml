@@ -31,12 +31,12 @@ services:
       - communication-network
     tty: true
 
-  manager_service:
+  manager:
     image: manager-service/development
     build:
       context: ../manager-service
       dockerfile: ../.docker/configurations/manager/Dockerfile.dev
-    container_name: manager_service_dev
+    container_name: manager_dev
     links:
       - mongodb
       - rabbitmq
@@ -65,14 +65,14 @@ services:
       '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${MANAGER_DEBUG_PORT},suspend=n"'
     ]
 
-  manager_app:
+  app:
     image: throyer/manager-app-development:latest
     build:
       context: ../manager-app
       dockerfile: ../.docker/configurations/app/Dockerfile.dev
-    container_name: manager_app_dev
+    container_name: app_dev
     links:
-      - server
+      - manager
     ports:
       - "${APP_PORT}:${APP_PORT}"
     volumes:
@@ -85,7 +85,7 @@ services:
     entrypoint: [
       "dockerize",
       "-wait",
-      "http://server:${SERVER_PORT}",
+      "http://manager:${MANAGER_PORT}",
       "-timeout",
       "20s",
       "npm",
@@ -93,12 +93,12 @@ services:
       "dev",
     ]
 
-  sender_service:
+  sender:
     image: sender-service/development
     build:
       context: ../sender-service
       dockerfile: ../.docker/configurations/sender/Dockerfile.dev
-    container_name: sender_service_dev
+    container_name: sender_dev
     links:
       - rabbitmq
     ports:
@@ -128,5 +128,5 @@ services:
 
 networks:
   communication-network:
-    name: email
+    name: communication
     driver: bridge

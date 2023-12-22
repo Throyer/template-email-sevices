@@ -2,7 +2,7 @@ import { api } from '@http/api'
 import { PageResponse } from '@http/dtos/page-response'
 import { TemplateResponse } from '@http/dtos/template-response'
 
-const RESOURCE_URL = 'templates'
+const RESOURCE_URL = 'email-templates'
 
 export const findAll = async (page?: number, size?: number) => {
   const params = new URLSearchParams()
