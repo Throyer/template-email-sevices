@@ -1,5 +1,6 @@
 ## Email template manager
 <img src="./assets/example.png" alt="Example" />
+<img src="./assets/infra.png" alt="Example" />
 
 ## first steps
 - create `.env` file and add permission on startup script
