@@ -5,6 +5,7 @@ import com.github.throyer.manager.utils.JSON;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,12 +13,8 @@ import java.io.IOException;
 
 import static java.lang.String.format;
 import static java.net.URI.create;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.ResponseEntity.status;
 
 @Log4j2
@@ -85,7 +82,11 @@ public class Responses {
         return status(CREATED)
                 .body(body);
     }
-
+  
+    public static ResponseStatusException badRequest(String reason) {
+      return new ResponseStatusException(BAD_REQUEST, reason);
+    }
+  
     public static ResponseStatusException conflict(String reason) {
         return new ResponseStatusException(CONFLICT, reason);
     }
@@ -108,7 +109,8 @@ public class Responses {
 
     public static ResponseEntity<ApiError> fromException(ResponseStatusException exception) {
         return status(exception.getStatusCode())
-                .body(new ApiError(exception.getReason(), exception.getStatusCode()));
+          .contentType(APPLICATION_JSON)
+              .body(new ApiError(exception.getReason(), exception.getStatusCode()));
     }
 
     public static void forbidden(HttpServletResponse response) {
