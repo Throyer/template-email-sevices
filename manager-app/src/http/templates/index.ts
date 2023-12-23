@@ -1,6 +1,6 @@
 import { api } from '@http/api'
 import { PageResponse } from '@http/dtos/page-response'
-import { TemplateResponse } from '@http/dtos/template-response'
+import { EmailTemplateInformationResponse } from '@http/dtos/email-template-response'
 
 const RESOURCE_URL = 'email-templates'
 
@@ -15,7 +15,7 @@ export const findAll = async (page?: number, size?: number) => {
     params.append('size', size.toString())
   }
 
-  return api.get<PageResponse<TemplateResponse>>(RESOURCE_URL, { params })
+  return api.get<PageResponse<EmailTemplateInformationResponse>>(RESOURCE_URL, { params })
 }
 
 export const preview = (id: string, body: object) => {

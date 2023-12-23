@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from '@material-tailwind/react'
 
-import { Template } from '@services/models/template'
+import { EmailTemplateInfo } from '@services/models/email-template-info'
 import { TemplateService } from '@services/templates'
 
 import { Body } from '@components/body/Body'
@@ -18,7 +18,7 @@ import { TemplatesTable } from './components/templates-table/TemplatesTable'
 import { Pagination } from '@services/pagination/pagination'
 
 export const Templates = () => {
-  const [templates, setTemplates] = useState<Template[]>([])
+  const [templates, setTemplates] = useState<EmailTemplateInfo[]>([])
   const [{ page: pageNumber, size: pageSize }, setPagination] =
     useState<Pagination>({
       page: 0,

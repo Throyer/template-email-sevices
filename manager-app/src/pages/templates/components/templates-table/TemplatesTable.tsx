@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@material-tailwind/react'
 
-import { Template } from '@services/models/template'
+import { EmailTemplateInfo } from '@services/models/template'
 import classNames from 'classnames'
 
 import { ClipboardText } from 'phosphor-react'
@@ -19,7 +19,7 @@ import { ClipboardText } from 'phosphor-react'
 const TABLE_HEAD = ['Nome', 'Domínio', 'ID', 'Data da ultima atualização']
 
 interface TemplateTableProps {
-  templates: Template[]
+  templates: EmailTemplateInfo[]
 }
 
 export const TemplatesTable = ({ templates }: TemplateTableProps) => {
