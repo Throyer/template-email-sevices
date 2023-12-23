@@ -38,7 +38,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-amqp</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>in.wilsonl.minifyhtml</groupId>
+      <artifactId>minify-html</artifactId>
+      <version>0.10.8</version>
+    </dependency>
+    
 		<!-- swagger -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
